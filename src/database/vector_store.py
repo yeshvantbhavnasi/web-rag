@@ -21,7 +21,7 @@ class VectorStore:
                 )
             )
         self.text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=100,
+            chunk_size=500,
             chunk_overlap=50,
             length_function=len,
         )
@@ -30,6 +30,15 @@ class VectorStore:
     async def add_document(self, content: Dict):
         """Add a document to the vector store"""
         # Split text into chunks
+        # if url is already in the collection, skip
+        existing_entries = self.collection.get(
+            where={"url": content['url']},
+            include=["documents"]  # Only include IDs to minimize data retrieval
+        )
+        
+        if len(existing_entries['documents']) > 0:
+            return
+        
         chunks = self.text_splitter.split_text(content['text'])
         
         # Generate unique IDs for each chunk

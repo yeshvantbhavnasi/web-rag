@@ -73,9 +73,7 @@ class WebCrawler:
         try:
             async with aiohttp.ClientSession() as session:
                 #print(f"Fetching URL: {url}")
-                response = await session.get(url)
-                data = await response.text()
-                #print('{} : {}...({} bytes)'.format(url, data[:10], len(data)))
+               
                 async with session.get(
                     url, 
                     headers={'User-Agent': self.config['user_agent']}
